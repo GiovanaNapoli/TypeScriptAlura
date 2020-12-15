@@ -1,4 +1,4 @@
-const controller = new NecogicaoController();
+const controller = new NegicaoController();
 
 document
     .querySelector('.form') !

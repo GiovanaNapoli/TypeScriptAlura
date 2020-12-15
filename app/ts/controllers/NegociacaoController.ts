@@ -1,4 +1,4 @@
-class NecogicaoController{
+class NegicaoController{
     
     //declarando variaveis privadas do tipo input 
     private _inputData: HTMLInputElement;
@@ -6,6 +6,7 @@ class NecogicaoController{
     private _inputValor: HTMLInputElement;
     private _negociacoes =  new Negociacoes();
     private _negociacoesView = new NegociacoesView('#negociacoes_view');
+    private _mensagemView = new MensagemView('#mensagemView');
 
     constructor(){
         //aqui convertemos elas para input element
@@ -28,6 +29,7 @@ class NecogicaoController{
 
         this._negociacoes.AddArray(negociacao);
         this._negociacoesView.update(this._negociacoes);
+        this._mensagemView.update("Negocição adicionada com sucesso!");
         
     }
 }
