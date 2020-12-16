@@ -15,6 +15,7 @@
 
       "noUnusedLocals": false,
       "noUnusedParameters": false,
+      "strictPropertyInitialization": false,
 
       "removeComments": true,
   
@@ -23,7 +24,8 @@
       "strictNullChecks": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true
+      "forceConsistentCasingInFileNames": true,
+      "experimentalDecorators": true
     },
     "include": [
         "app/ts/**/*"
