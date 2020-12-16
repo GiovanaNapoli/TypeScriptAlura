@@ -5,8 +5,8 @@ class NegicaoController{
     private _inputQuantidade: JQuery;
     private _inputValor: JQuery;
     private _negociacoes =  new Negociacoes();
-    private _negociacoesView = new NegociacoesView('#negociacoes_view');
-    private _mensagemView = new MensagemView('#mensagemView');
+    private _negociacoesView = new Views.NegociacoesView('#negociacoes_view');
+    private _mensagemView = new Views.MensagemView('#mensagemView');
 
     constructor(){
         //aqui convertemos elas para input element
