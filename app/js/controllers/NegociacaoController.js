@@ -1,6 +1,6 @@
 System.register(["../models/index", "../views/index"], function (exports_1, context_1) {
     "use strict";
-    var index_1, index_2, NegicaoController;
+    var index_1, index_2, NegicaoController, DiaDaSemana;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -15,7 +15,7 @@ System.register(["../models/index", "../views/index"], function (exports_1, cont
             NegicaoController = class NegicaoController {
                 constructor() {
                     this._negociacoes = new index_1.Negociacoes();
-                    this._negociacoesView = new index_2.NegociacoesView('#negociacoes_view');
+                    this._negociacoesView = new index_2.NegociacoesView('#negociacoes_view', true);
                     this._mensagemView = new index_2.MensagemView('#mensagemView');
                     this._inputData = $('#data');
                     this._inputQuantidade = $('#quantidade');
@@ -24,13 +24,30 @@ System.register(["../models/index", "../views/index"], function (exports_1, cont
                 }
                 adiciona(event) {
                     event.preventDefault();
-                    const negociacao = new index_1.Negociacao(new Date(this._inputData.val().replace(/-/g, ',')), parseInt(this._inputQuantidade.val()), parseFloat(this._inputValor.val()));
+                    let date = new Date(this._inputData.val().replace(/-/g, ','));
+                    if (!this._diaUtil(date)) {
+                        this._mensagemView.update('Somente negociações em dias úteis, por favor!');
+                        return;
+                    }
+                    const negociacao = new index_1.Negociacao(date, parseInt(this._inputQuantidade.val()), parseFloat(this._inputValor.val()));
                     this._negociacoes.AddArray(negociacao);
                     this._negociacoesView.update(this._negociacoes);
                     this._mensagemView.update("Negocição adicionada com sucesso!");
                 }
+                _diaUtil(date) {
+                    return date.getDay() != DiaDaSemana.Sabado && date.getDay() != DiaDaSemana.Domingo;
+                }
             };
             exports_1("NegicaoController", NegicaoController);
+            (function (DiaDaSemana) {
+                DiaDaSemana[DiaDaSemana["Domingo"] = 0] = "Domingo";
+                DiaDaSemana[DiaDaSemana["Segunda"] = 1] = "Segunda";
+                DiaDaSemana[DiaDaSemana["Terca"] = 2] = "Terca";
+                DiaDaSemana[DiaDaSemana["Quarta"] = 3] = "Quarta";
+                DiaDaSemana[DiaDaSemana["Quinta"] = 4] = "Quinta";
+                DiaDaSemana[DiaDaSemana["Sexta"] = 5] = "Sexta";
+                DiaDaSemana[DiaDaSemana["Sabado"] = 6] = "Sabado";
+            })(DiaDaSemana || (DiaDaSemana = {}));
         }
     };
 });
