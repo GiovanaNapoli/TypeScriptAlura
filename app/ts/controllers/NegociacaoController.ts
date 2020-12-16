@@ -1,12 +1,15 @@
-class NegicaoController{
+import {Negociacao, Negociacoes} from '../models/index';
+import {MensagemView, NegociacoesView} from '../views/index';
+
+export class NegicaoController{
     
     //declarando variaveis privadas do tipo input 
     private _inputData: JQuery;
     private _inputQuantidade: JQuery;
     private _inputValor: JQuery;
     private _negociacoes =  new Negociacoes();
-    private _negociacoesView = new Views.NegociacoesView('#negociacoes_view');
-    private _mensagemView = new Views.MensagemView('#mensagemView');
+    private _negociacoesView = new NegociacoesView('#negociacoes_view');
+    private _mensagemView = new MensagemView('#mensagemView');
 
     constructor(){
         //aqui convertemos elas para input element
@@ -22,9 +25,9 @@ class NegicaoController{
 
         const negociacao = new Negociacao(
             //convertendo a string recebida para date, e trocando o '-' para ',' por meio de regex
-            new Date(this._inputData.val().replace(/-/g, ',')),
-            parseInt(this._inputQuantidade.val()),
-            parseFloat(this._inputValor.val())
+            new Date((this._inputData.val() as string).replace(/-/g, ',')),
+            parseInt(<string>this._inputQuantidade.val()),
+            parseFloat(<string>this._inputValor.val())
         );
 
         this._negociacoes.AddArray(negociacao);
