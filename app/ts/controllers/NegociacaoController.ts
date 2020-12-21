@@ -2,6 +2,7 @@ import {Negociacao, Negociacoes, NegociacaoParcial} from '../models/index';
 import {MensagemView, NegociacoesView} from '../views/index';
 import {domInjec, throttle} from '../helpers/decorators/index';
 import {NegociacaoService} from '../services/index';
+import {imprime} from '../helpers/index';
 
 export class NegicaoController{
     
@@ -52,7 +53,7 @@ export class NegicaoController{
         this._negociacoes.AddArray(negociacao);
         this._negociacoesView.update(this._negociacoes);
         this._mensagemView.update("Negocição adicionada com sucesso!");
-        
+        imprime(negociacao, this._negociacoes);
     }
 
     private _diaUtil(date: Date){
@@ -60,23 +61,31 @@ export class NegicaoController{
     }
 
     @throttle()
-    importaDados(){
+    async importaDados(){
 
-        this._negociacaoService
-            .obterNegociacoes(res => {
+        try{
+            const negociacoesParaImportar = await this._negociacaoService
+                .obterNegociacoes(res => {
 
-                if(res.ok){
-                    return res;
-                }else{
-                    throw new Error(res.statusText);
-                }
-            })
-            .then(negociacoes => {
-                negociacoes.forEach(negociacao => 
+                    if(res.ok){
+                        return res;
+                    }else{
+                        throw new Error(res.statusText);
+                    }
+                });
+            const negociacoesJaImportadas = this._negociacoes.getArray();
+            negociacoesParaImportar
+                .filter(negociacao =>
+                    !negociacoesJaImportadas.some(jaImportada => 
+                        negociacao.ehIgualavel(jaImportada)))
+                .forEach(negociacao => 
                     this._negociacoes.AddArray(negociacao))
 
-                this._negociacoesView.update(this._negociacoes);
-            });
+            this._negociacoesView.update(this._negociacoes);
+        }catch(err) {
+            this._mensagemView.update(err.message);
+        }
+            
     }
 }
 enum DiaDaSemana{
