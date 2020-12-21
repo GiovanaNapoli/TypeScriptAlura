@@ -1,6 +1,7 @@
-import {Negociacao, Negociacoes} from '../models/index';
+import {Negociacao, Negociacoes, NegociacaoParcial} from '../models/index';
 import {MensagemView, NegociacoesView} from '../views/index';
-import {domInjec} from '../helpers/decorators/index';
+import {domInjec, throttle} from '../helpers/decorators/index';
+import {NegociacaoService} from '../services/index';
 
 export class NegicaoController{
     
@@ -17,6 +18,8 @@ export class NegicaoController{
     private _negociacoes =  new Negociacoes();
     private _negociacoesView = new NegociacoesView('#negociacoes_view', true);
     private _mensagemView = new MensagemView('#mensagemView');
+
+    private _negociacaoService = new NegociacaoService();
 
     constructor(){
         //aqui convertemos elas para input element
@@ -54,6 +57,26 @@ export class NegicaoController{
 
     private _diaUtil(date: Date){
         return date.getDay() != DiaDaSemana.Sabado && date.getDay() != DiaDaSemana.Domingo;
+    }
+
+    @throttle()
+    importaDados(){
+
+        this._negociacaoService
+            .obterNegociacoes(res => {
+
+                if(res.ok){
+                    return res;
+                }else{
+                    throw new Error(res.statusText);
+                }
+            })
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => 
+                    this._negociacoes.AddArray(negociacao))
+
+                this._negociacoesView.update(this._negociacoes);
+            });
     }
 }
 enum DiaDaSemana{
